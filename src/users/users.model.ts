@@ -6,7 +6,7 @@ interface UserCreationAttrs{
   password: string;
 }
 
-type UserRole = 'admin' | 'media_moderator' | 'site_moderator' | 'voice_team_leader' | 'voice_team_moderator' | 'user';
+export type UserRole = 'admin' | 'media_moderator' | 'site_moderator' | 'voice_team_leader' | 'voice_team_moderator' | 'user';
 
 @Table({tableName:'users'})
 export class User extends Model<User, UserCreationAttrs>{
