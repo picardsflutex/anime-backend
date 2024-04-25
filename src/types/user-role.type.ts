@@ -1,0 +1,1 @@
+export type UserRole = 'admin' | 'media_moderator' | 'site_moderator' | 'voice_team_leader' | 'voice_team_moderator' | 'user';

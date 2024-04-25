@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { addMonths, addDays, addHours, addMinutes, addSeconds } from 'date-fns';
-import { User, UserRole } from './users.model';
+import { User } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { addRoleDto } from './dto/add-role.dto';
 import { banUserDto } from './dto/ban-user.dto';
 import { parseTimeOfBan } from './functions/parse-ban-time';
+import { UserRole } from 'src/types/user-role.type';
 
 @Injectable()
 export class UsersService {
@@ -24,6 +25,11 @@ export class UsersService {
 
   async getUserByEmail(email: string) {
     const user = await this.userRepository.findOne({where:{email}, include: {all: true}})
+    return user;
+  }
+
+  async getUserById(user_id: number) {
+    const user = await this.userRepository.findByPk(user_id)
     return user;
   }
 
