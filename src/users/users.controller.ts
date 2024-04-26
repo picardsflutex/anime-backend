@@ -2,9 +2,9 @@ import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { User } from './users.model';
-import { AtGuard, RoleGuard } from 'src/guards';
-import { addRoleDto, banUserDto } from 'src/dto';
-import { Public, Roles } from 'src/decorators';
+import { AtGuard, RoleGuard } from 'src/common/guards';
+import { addRoleDto, banUserDto } from 'src/common/dto';
+import { Public, Roles } from 'src/common/decorators';
 
 
 @ApiTags('Users')

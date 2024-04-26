@@ -1,10 +1,10 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from 'src/dto';
+import { CreateUserDto } from 'src/common/dto';
 import { AuthService } from './auth.service';
-import { Tokens } from 'src/types';
-import { GetCurrentUser, GetCurrentUserId, Public } from 'src/decorators';
-import { RtGuard } from 'src/guards';
+import { Tokens } from 'src/common/types';
+import { GetCurrentUser, GetCurrentUserId, Public } from 'src/common/decorators';
+import { RtGuard } from 'src/common/guards';
 
 @ApiTags('Auth')
 @Controller('auth')

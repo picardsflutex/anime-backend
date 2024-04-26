@@ -2,7 +2,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { AtGuard } from './guards';
+import { AtGuard } from './common/guards';
 
 async function bootstrap() {
   // Consts for app

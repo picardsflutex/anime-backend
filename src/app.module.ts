@@ -5,7 +5,9 @@ import { ConfigModule } from '@nestjs/config';
 import { User } from './users/users.model';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
-import { AtGuard } from './guards';
+import { AtGuard } from './common/guards';
+import { ImagesModule } from './images/images.module';
+import { AnimeModule } from './anime/anime.module';
 
 
 @Module({
@@ -32,7 +34,9 @@ import { AtGuard } from './guards';
       autoLoadModels: true
     }),
     UsersModule,
-    AuthModule
+    AuthModule,
+    ImagesModule,
+    AnimeModule
   ],
 })
 export class AppModule {}
