@@ -1,12 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { addMonths, addDays, addHours, addMinutes, addSeconds } from 'date-fns';
 import { User } from './users.model';
-import { CreateUserDto } from './dto/create-user.dto';
-import { addRoleDto } from './dto/add-role.dto';
-import { banUserDto } from './dto/ban-user.dto';
 import { parseTimeOfBan } from './functions/parse-ban-time';
-import { UserRole } from 'src/types/user-role.type';
+import { UserRole } from 'src/types';
+import { CreateUserDto, addRoleDto, banUserDto } from 'src/dto';
 
 @Injectable()
 export class UsersService {
@@ -22,22 +19,7 @@ export class UsersService {
     const user = await this.userRepository.create(dto);
     return user;
   }
-
-  async getUserByEmail(email: string) {
-    const user = await this.userRepository.findOne({where:{email}, include: {all: true}})
-    return user;
-  }
-
-  async getUserById(user_id: number) {
-    const user = await this.userRepository.findByPk(user_id)
-    return user;
-  }
-
-  async getUsers() {
-    const users = await this.userRepository.findAll()
-    return users;
-  }
-
+  
   async setRole(dto: addRoleDto) {
     const user = await this.userRepository.findByPk(dto.user_id)
     if(user && this.isValidRole(dto.role)){
@@ -49,7 +31,7 @@ export class UsersService {
       'User not found or Role not true.', HttpStatus.NOT_FOUND
     )
   }
-
+  
   async banUser(dto: banUserDto) {
     const user = await this.userRepository.findByPk(dto.user_id);
     
@@ -61,16 +43,26 @@ export class UsersService {
     
     user.status = 'banned';
     user.badReason = dto.badReason;
-
+    
     const banExpiration = parseTimeOfBan(dto.timeOfBan);
     if (banExpiration !== null) {
-        user.banned_to = banExpiration;
+      user.banned_to = banExpiration;
     } else {
-        user.banned_to = new Date('3000-01-01 00:00:00.000+03');
+      user.banned_to = new Date('3000-01-01 00:00:00.000+03');
     }
-
+    
     await user.save();
     
+    return user;
+  }
+
+  async getUserByEmail(email: string) {
+    const user = await this.userRepository.findOne({where:{email}, include: {all: true}})
+    return user;
+  }
+
+  async getUserById(user_id: number) {
+    const user = await this.userRepository.findByPk(user_id)
     return user;
   }
 }

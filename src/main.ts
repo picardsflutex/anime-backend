@@ -1,7 +1,8 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { AtGuard } from './guards';
 
 async function bootstrap() {
   // Consts for app
@@ -19,6 +20,8 @@ async function bootstrap() {
 
   // Start server
   app.useGlobalPipes(new ValidationPipe())
+  // const reflector = new Reflector();
+  // app.useGlobalGuards(new AtGuard(reflector))
   await app.listen(PORT, () => console.log(`Started on port = ${process.env.PORT}`));
 }
 

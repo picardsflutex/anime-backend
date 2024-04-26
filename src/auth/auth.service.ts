@@ -1,50 +1,53 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UsersService } from './../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs'
+import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/users.model';
-import { Tokens } from 'src/types/token.type';
+import { CreateUserDto } from 'src/dto';
+import { Tokens } from 'src/types';
 
 @Injectable()
 export class AuthService {
-  userRepository: any;
 
   constructor(
     private userService:UsersService,
     private jwtService:JwtService
   ) {}
-  
-  async register(userDto: CreateUserDto) {
+
+  async signup(userDto: CreateUserDto) {
+
     const candidate = await this.userService.getUserByEmail(userDto.email)
     if (candidate) {
       throw new HttpException('Current user is already exist.',
       HttpStatus.BAD_REQUEST)
     }
+
     const hashPassword = await bcrypt.hash(userDto.password_hash, 5)
     const user = await this.userService.createUser(
       {...userDto, password_hash: hashPassword}
     )
-    const tokens = await this.getTokens(user)
 
-    await this.updateRtHash(user.user_id, tokens.refresh_token)
-
-    return tokens
+    return await this.getTokens(user)
   }
 
-  async login(userDto: CreateUserDto) : Promise<Tokens> {
+  async signin(userDto: CreateUserDto) {
     const user = await this.validateUser(userDto)
-    const tokens = await this.getTokens(user)
-    await this.updateRtHash(user.user_id, tokens.refresh_token)
-    return tokens
+    return await this.getTokens(user)
   }
 
-  async logout() {
+  async refresh(gettedUserId: number, hashed_refresh_token: string) {
+    console.log(gettedUserId, hashed_refresh_token)
+    const { user_id } = this.jwtService.verify(hashed_refresh_token,
+      {secret: process.env.PRIVATE_RT_SECRET}) as { user_id: number }
 
-  }
+    if(gettedUserId !== user_id)
+      throw new UnauthorizedException({message: 'Invalid token or userId.'})
 
-  async refresh() {
+    const user = await this.userService.getUserById(user_id)
+
+    if (!user) throw new HttpException('User not found.', HttpStatus.NOT_FOUND)
     
+    return await this.getTokens(user)
   }
 
   async getTokens(user: User) {
@@ -55,7 +58,7 @@ export class AuthService {
         role: user.role
       },{
         secret: process.env.PRIVATE_AT_SECRET,
-        expiresIn: 60 * 15,
+        expiresIn: 60 * 30,
       }
       ),
       this.jwtService.signAsync({
@@ -64,17 +67,17 @@ export class AuthService {
         role: user.role
       },{
         secret: process.env.PRIVATE_RT_SECRET,
-        expiresIn: 60 * 60 * 24 * 14,
+        expiresIn: 60 * 60 * 24 * 30,
       }
       )]
-    );
+    )
 
     return {
       access_token: at,
       refresh_token: rt,
     } as Tokens
   }
-
+  
   async validateUser(userDto: CreateUserDto) {
     const user = await this.userService.getUserByEmail(userDto.email)
     const passwordEquals = await bcrypt.compare(
@@ -85,12 +88,5 @@ export class AuthService {
       return user
     }
     throw new UnauthorizedException({message: 'Invalid input password or email.'})
-  }
-
-  async updateRtHash(user_id:number, rt:string){
-    const hashedRT = await bcrypt.hash(rt, 5)
-    const user = await this.userService.getUserById(user_id)
-    user.hashed_refresh_token = hashedRT;
-    await user.save();
   }
 }

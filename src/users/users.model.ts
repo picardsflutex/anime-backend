@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { UserRole } from "src/types/user-role.type";
+import { UserRole } from "src/types";
 
 interface UserCreationAttrs{
   email: string;
@@ -25,10 +25,6 @@ export class User extends Model<User, UserCreationAttrs>{
   @ApiProperty({example: 'examplepass123', description: 'Password', required: true})
   @Column({type: DataType.STRING, allowNull: false})
   password_hash!: string;
-
-  @ApiProperty({example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxNCwiZW1haWwiOiJ0ZW1hc2RhIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MTM5ODU3MTIsImV4cCI6MTcxMzk4NjMxMn0.Y8e63S_R9wbJE4DampyepcHpheCMAvIsyA8vHVltSic', description: 'JWTRefreshToken'})
-  @Column({type: DataType.STRING})
-  hashed_refresh_token: string;
 
   @ApiProperty({example: 'user', description: 'Role', type: 'UserRole = admin | media_moderator | site_moderator | voice_team_leader | voice_team_moderator | user'})
   @Column({type: DataType.ENUM('admin', 'media_moderator', 'site_moderator', 'voice_team_leader', 'voice_team_moderator', 'user'), defaultValue:'user'})

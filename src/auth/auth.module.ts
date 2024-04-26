@@ -14,14 +14,7 @@ import { AtStrategy, RtStrategy } from './strategies';
   ],
   imports: [
     forwardRef(() => UsersModule),
-    JwtModule.register(
-      {
-        // secret: process.env.PRIVATE_SECRET || 'SECRET',
-        // signOptions: {
-        //   expiresIn: '10m'
-        // }
-      }
-    )
+    JwtModule.register({})
   ],
   exports: [
     AuthService,
