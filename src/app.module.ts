@@ -8,6 +8,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards';
 import { ImagesModule } from './images/images.module';
 import { AnimeModule } from './anime/anime.module';
+import { MailerModule } from './mailer/mailer.module';
 
 
 @Module({
@@ -36,7 +37,8 @@ import { AnimeModule } from './anime/anime.module';
     UsersModule,
     AuthModule,
     ImagesModule,
-    AnimeModule
+    AnimeModule,
+    MailerModule
   ],
 })
 export class AppModule {}
