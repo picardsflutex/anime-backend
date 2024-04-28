@@ -394,6 +394,8 @@ Temporary Items
 
 =======
 # Local
+.production.env
+.development.env
 .env
 dist
 .webpack
