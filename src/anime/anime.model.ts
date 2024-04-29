@@ -1,15 +1,71 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Table, Column, Model, DataType, HasMany, BelongsToMany, BelongsTo, HasOne, ForeignKey } from 'sequelize-typescript';
+
+import { AnimeGenre } from 'src/genre/genre-anime.model';
+import { AnimeTag } from 'src/tag/tag-anime.model';
+import { AnimeComment } from 'src/comment/comment-anime.model';
+import { AnimeRelation } from './anime-relation.model';
+
+import { User } from 'src/users/users.model';
+import { Comment } from 'src/comment/comment.model';
+import { Genre } from 'src/genre/genre.model';
+import { Tag } from 'src/tag/tag.model';
 
 interface AnimeCreationAttrs{
-  email: string;
-  password: string;
+  englishTitle: string;
+  releaseYear: number;
+  genres: Genre[];
+  tag: Tag[];
+  description: string;
+  imagePath: string;
+  userId: number;
+  author: User;
 }
 
 @Table({tableName:'animes'})
-export class Anime extends Model<Anime, AnimeCreationAttrs>{
-  
-  @ApiProperty({example: 1, description: 'Unique identifier'})
-  @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
-  anime_id!: number;
+export class AnimeTitle extends Model<AnimeTitle, AnimeCreationAttrs> {
+  @Column({type: DataType.INTEGER, unique: true, primaryKey: true, autoIncrement: true })
+  anime_id: number;
+
+  @Column({type: DataType.STRING, unique: true, allowNull: false})
+  englishTitle: string;
+
+  @Column({type: DataType.STRING, unique: true, allowNull: false})
+  originalTitle: string;
+
+  @Column({type: DataType.INTEGER, allowNull: false})
+  releaseYear: number;
+
+  @BelongsToMany(() => Genre, () => AnimeGenre)
+  genres: Genre[]
+
+  @BelongsToMany(() => Tag, () => AnimeTag)
+  tag: Tag[]
+
+  @Column({type: DataType.INTEGER, defaultValue: 0})
+  episodesCurrent: number;
+
+  @Column({type: DataType.INTEGER, defaultValue: 1})
+  episodesTotal: number;
+
+  @Column({type: DataType.DECIMAL(2, 2), defaultValue: 0.0})
+  rating: number;
+
+  @Column({type: DataType.STRING, allowNull: false})
+  description: string;
+
+  @Column({type: DataType.STRING, allowNull: false})
+  imagePath: string;
+
+  @BelongsToMany(() => Comment, () => AnimeComment)
+  comment: Comment[];
+
+  @BelongsToMany(() => AnimeTitle, () => AnimeRelation, 'animeId', 'relatedAnimeId')
+  relatedAnimes: AnimeTitle[];
+
+  @ForeignKey(() => User)
+  @Column({type: DataType.INTEGER, allowNull: false})
+  userId: number;
+
+  @BelongsTo(() => User)
+  author: User;
 }

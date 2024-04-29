@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { AnimeTitle } from "src/anime/anime.model";
 import { UserRole } from "src/common/types";
 
 interface UserCreationAttrs{
@@ -54,14 +55,6 @@ export class User extends Model<User, UserCreationAttrs>{
   @Column({type: DataType.DATE})
   banned_to: Date;
 
-
-  // Створення зв'язку
-
-  // static associate(models: any) {
-  //   User.hasMany(models.Comment);
-  //   User.hasMany(models.Friend);
-  //   User.hasMany(models.Rating);
-  //   User.hasMany(models.AnimeList);
-  //   User.hasMany(models.BlogPost);
-  // }
+  @HasMany(() => AnimeTitle)
+  posts: AnimeTitle[];
 }
