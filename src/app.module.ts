@@ -22,6 +22,7 @@ import { AnimeComment } from './comment/comment-anime.model';
 import { Tag } from './tag/tag.model';
 import { Genre } from './genre/genre.model';
 import { Comment } from './comment/comment.model';
+import { AnimeRelation } from './anime/anime-relation.model';
 
 
 @Module({
@@ -52,7 +53,8 @@ import { Comment } from './comment/comment.model';
         AnimeComment,
         Tag,
         Genre,
-        Comment
+        Comment,
+        AnimeRelation
       ],
       autoLoadModels: true
     }),
