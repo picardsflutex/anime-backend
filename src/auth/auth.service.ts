@@ -1,9 +1,11 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs'
+import * as uuid from 'uuid'
 import { UsersService } from 'src/users/users.service';
+import { MailerService } from 'src/mailer/mailer.service';
 import { User } from 'src/users/users.model';
-import { CreateUserDto } from 'src/common/dto';
+import { AuthUserDto, CreateUserDto } from 'src/common/dto';
 import { Tokens } from 'src/common/types';
 
 @Injectable()
@@ -11,28 +13,40 @@ export class AuthService {
 
   constructor(
     private userService:UsersService,
-    private jwtService:JwtService
+    private jwtService:JwtService,
+    private mailService:MailerService
   ) {}
 
-  async signup(userDto: CreateUserDto) {
+  async signup(candidateDto: AuthUserDto) {
 
-    const candidate = await this.userService.getUserByEmail(userDto.email)
-    if (candidate) {
+    const candidate = await this.userService.getUserByEmail(candidateDto.email)
+    if (candidate)
       throw new HttpException('Current user is already exist.',
       HttpStatus.BAD_REQUEST)
-    }
 
-    const hashPassword = await bcrypt.hash(userDto.password_hash, 5)
+    const hashPassword = await bcrypt.hash(candidateDto.password_hash, 5)
+    const activateKey : string = uuid.v4()
+
     const user = await this.userService.createUser(
-      {...userDto, password_hash: hashPassword}
+      {...candidateDto, password_hash: hashPassword, activateKey}
     )
+    await this.mailService.sendActivationEmail(candidateDto.email, activateKey)
 
     return await this.getTokens(user)
   }
 
-  async signin(userDto: CreateUserDto) {
+  async signin(userDto: AuthUserDto) {
     const user = await this.validateUser(userDto)
     return await this.getTokens(user)
+  }
+
+  async activate(activateKey : string) {
+    const user = await this.userService.getUserByActivationKey(activateKey)
+    if (!user)
+      throw new HttpException('Incorrect activation key.',
+      HttpStatus.BAD_REQUEST)
+    user.isActivated = true;
+    await user.save();
   }
 
   async refresh(gettedUserId: number, hashed_refresh_token: string) {
@@ -78,12 +92,15 @@ export class AuthService {
     } as Tokens
   }
   
-  async validateUser(userDto: CreateUserDto) {
+  async validateUser(userDto: AuthUserDto) {
     const user = await this.userService.getUserByEmail(userDto.email)
     const passwordEquals = await bcrypt.compare(
       userDto.password_hash,
       user.password_hash
     )
+    if(!user.isActivated)
+      throw new HttpException('Confirm your email.',
+      HttpStatus.BAD_REQUEST)
     if(user && passwordEquals) {
       return user
     }

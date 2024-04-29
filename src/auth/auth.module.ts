@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AtStrategy, RtStrategy } from './strategies';
+import { MailerModule } from 'src/mailer/mailer.module';
 
 @Module({
   controllers: [AuthController],
@@ -14,7 +15,8 @@ import { AtStrategy, RtStrategy } from './strategies';
   ],
   imports: [
     forwardRef(() => UsersModule),
-    JwtModule.register({})
+    JwtModule.register({}),
+    MailerModule
   ],
   exports: [
     AuthService,

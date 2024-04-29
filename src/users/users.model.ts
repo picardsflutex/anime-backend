@@ -26,6 +26,14 @@ export class User extends Model<User, UserCreationAttrs>{
   @Column({type: DataType.STRING, allowNull: false})
   password_hash!: string;
 
+  @ApiProperty({example: 'cae20cca-3778-494e-aa21-a9e7134fa798', description: 'Key for activate link.', required: true})
+  @Column({type: DataType.STRING, allowNull: false})
+  activateKey: string;
+
+  @ApiProperty({example: 'false', description: 'Account is activated', required: true})
+  @Column({type: DataType.BOOLEAN, defaultValue: false})
+  isActivated: boolean;
+
   @ApiProperty({example: 'user', description: 'Role', type: 'UserRole = admin | media_moderator | site_moderator | voice_team_leader | voice_team_moderator | user'})
   @Column({type: DataType.ENUM('admin', 'media_moderator', 'site_moderator', 'voice_team_leader', 'voice_team_moderator', 'user'), defaultValue:'user'})
   role: UserRole;

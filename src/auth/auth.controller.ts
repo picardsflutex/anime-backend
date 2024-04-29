@@ -1,6 +1,6 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Redirect, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from 'src/common/dto';
+import { AuthUserDto } from 'src/common/dto';
 import { AuthService } from './auth.service';
 import { Tokens } from 'src/common/types';
 import { GetCurrentUser, GetCurrentUserId, Public } from 'src/common/decorators';
@@ -17,7 +17,7 @@ export class AuthController {
   @Public()
   @Post('/signin')
   @HttpCode(HttpStatus.OK)
-  login(@Body() userDto: CreateUserDto) : Promise<Tokens> {
+  login(@Body() userDto: AuthUserDto) : Promise<Tokens> {
     return this.authService.signin(userDto)
   }
 
@@ -26,15 +26,26 @@ export class AuthController {
   @Public()
   @Post('/signup')
   @HttpCode(HttpStatus.OK)
-  register(@Body() userDto: CreateUserDto) : Promise<Tokens>  {
+  register(@Body() userDto: AuthUserDto) : Promise<Tokens>  {
     return this.authService.signup(userDto)
+  }
+
+  @ApiOperation({summary: 'Activate account.'})
+  @ApiResponse({status: 200, description:'Redirect to login page'})
+  @Public()
+  @Get('/activate/:key')
+  @HttpCode(HttpStatus.OK)
+  @Redirect('/')
+  activate(@Param('key') activationKey: string) {
+    this.authService.activate(activationKey)
+    return { url: process.env.CLIENT_URL + '/login' };
   }
 
   @ApiOperation({summary: 'Logout to delete refresh token.'})
   @ApiResponse({status: 200, description:'Refresh and access tokens.'})
   @Public()
   @UseGuards(RtGuard)
-  @Post('/refresh') 
+  @Get('/refresh') 
   @HttpCode(HttpStatus.OK)
   refresh(
     @GetCurrentUserId() userId: number,

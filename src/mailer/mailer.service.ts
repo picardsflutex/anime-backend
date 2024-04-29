@@ -44,4 +44,31 @@ export class MailerService {
       throw new HttpException(error, HttpStatus.BAD_REQUEST)
     }
   }
+
+  async sendActivationEmail(recipient: string, activateKey) {
+    const transport = this.mailTransport();
+
+    const link = `${process.env.API_URL}/auth/activate/${activateKey}`
+
+    const options: Mail.Options = {
+      from: {
+        name: process.env.EMAIL_NAME,
+        address: process.env.DEFAULT_EMAIL,
+      },
+      to: recipient,
+      subject: 'Activation account on' + process.env.CLIENT_URL,
+      html:
+        `
+          <div>
+            <h1>Для активации перейдите по ссылке</h1>
+            <a href="${link}">${link}</a>
+          </div>
+        `
+    }
+    try {
+      return await transport.sendMail(options);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
+  }
 }

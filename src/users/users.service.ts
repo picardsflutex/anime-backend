@@ -65,4 +65,9 @@ export class UsersService {
     const user = await this.userRepository.findByPk(user_id)
     return user;
   }
+
+  async getUserByActivationKey(activateKey: string) {
+    const user = await this.userRepository.findOne({where:{activateKey}, include: {all: true}})
+    return user;
+  }
 }
