@@ -44,7 +44,7 @@ import { AnimeRelation } from './anime/anime-relation.model';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      synchronize: true, //delete for prod
+      // synchronize: true, //delete for prod
       models: [
         User,
         AnimeTitle,

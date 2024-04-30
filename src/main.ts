@@ -1,16 +1,28 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { AtGuard } from './common/guards';
 import { Sequelize } from 'sequelize-typescript';
+import helmet from '@fastify/helmet'
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 
 async function bootstrap() {
   // Consts for app
   const PORT = process.env.PORT || '3003'
-  const app = await NestFactory.create(AppModule);
-  const sequelize = app.get(Sequelize); //delete for prod
-  await sequelize.sync({ force: true }); //delete for prod
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+  );
+
+  app.register(helmet)
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+
+  // const sequelize = app.get(Sequelize); //delete for prod
+  // await sequelize.sync({ force: true }); //delete for prod
 
   // Swagger config
   const config = new DocumentBuilder()
