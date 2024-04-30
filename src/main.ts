@@ -9,16 +9,14 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 async function bootstrap() {
   // Consts for app
   const PORT = process.env.PORT || '3003'
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter(),
+  const app = await NestFactory.create(
+    AppModule
   );
 
-  app.register(helmet)
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
   })
 
   // const sequelize = app.get(Sequelize); //delete for prod
