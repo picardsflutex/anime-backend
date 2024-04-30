@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
 import { AnimeTitle } from "src/anime/anime.model";
+import { Comment } from "src/comment/comment.model";
 import { UserRole } from "src/common/types";
 
 interface UserCreationAttrs{
@@ -18,6 +19,10 @@ export class User extends Model<User, UserCreationAttrs>{
   @ApiProperty({example: 'Evgenij', description: 'Username'})
   @Column({type: DataType.STRING, unique: true})
   username: string;
+
+  @ApiProperty({example: 'apfasfafasasf.jpg', description: 'Image path'})
+  @Column({type: DataType.STRING, unique: true})
+  avatarImg: string;
 
   @ApiProperty({example: 'examplemail@example.com', description: 'E-mail', required: true})
   @Column({type: DataType.STRING, unique: true, allowNull: false})
@@ -56,5 +61,8 @@ export class User extends Model<User, UserCreationAttrs>{
   banned_to: Date;
 
   @HasMany(() => AnimeTitle)
-  posts: AnimeTitle[];
+  titles: AnimeTitle[];
+
+  @HasMany(() => Comment)
+  comments: Comment[];
 }

@@ -4,8 +4,8 @@ import { CommentController } from './comment.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 import { Comment } from './comment.model'
-import { AnimeComment } from './comment-anime.model';
 import { AnimeTitle } from 'src/anime/anime.model';
+import { User } from 'src/users/users.model';
 
 @Module({
   providers: [CommentService],
@@ -14,7 +14,7 @@ import { AnimeTitle } from 'src/anime/anime.model';
     SequelizeModule.forFeature([
       Comment,
       AnimeTitle,
-      AnimeComment
+      User
     ])
   ]
 })

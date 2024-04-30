@@ -8,11 +8,6 @@ import { CreateUserDto, addRoleDto, banUserDto } from 'src/common/dto';
 @Injectable()
 export class UsersService {
 
-  private isValidRole(role: string): boolean {
-    const validRoles: UserRole[] = ['admin', 'media_moderator', 'site_moderator', 'voice_team_leader', 'voice_team_moderator', 'user'];
-    return validRoles.includes(role as UserRole);
-  }
-
   constructor(@InjectModel(User) private userRepository: typeof User){}
 
   async createUser(dto: CreateUserDto) {
@@ -69,5 +64,10 @@ export class UsersService {
   async getUserByActivationKey(activateKey: string) {
     const user = await this.userRepository.findOne({where:{activateKey}, include: {all: true}})
     return user;
+  }
+
+  private isValidRole(role: string): boolean {
+    const validRoles: UserRole[] = ['admin', 'media_moderator', 'site_moderator', 'voice_team_leader', 'voice_team_moderator', 'user'];
+    return validRoles.includes(role as UserRole);
   }
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AnimeService } from './anime.service';
 import { AnimeController } from './anime.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -9,7 +9,7 @@ import { Genre } from 'src/genre/genre.model';
 import { Comment } from 'src/comment/comment.model';
 import { AnimeTag } from 'src/tag/tag-anime.model';
 import { AnimeGenre } from 'src/genre/genre-anime.model';
-import { AnimeComment } from 'src/comment/comment-anime.model';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   providers: [AnimeService],
@@ -21,9 +21,9 @@ import { AnimeComment } from 'src/comment/comment-anime.model';
       Genre,
       Comment,
       AnimeTag,
-      AnimeGenre,
-      AnimeComment
-    ])
+      AnimeGenre
+    ]),
+    forwardRef(() => AuthModule)
   ]
 })
 export class AnimeModule {}

@@ -18,7 +18,6 @@ import { User } from './users/users.model';
 import { AnimeTitle } from './anime/anime.model';
 import { AnimeTag } from './tag/tag-anime.model';
 import { AnimeGenre } from './genre/genre-anime.model';
-import { AnimeComment } from './comment/comment-anime.model';
 import { Tag } from './tag/tag.model';
 import { Genre } from './genre/genre.model';
 import { Comment } from './comment/comment.model';
@@ -45,12 +44,12 @@ import { AnimeRelation } from './anime/anime-relation.model';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
+      synchronize: true, //delete for prod
       models: [
         User,
         AnimeTitle,
         AnimeTag,
         AnimeGenre,
-        AnimeComment,
         Tag,
         Genre,
         Comment,

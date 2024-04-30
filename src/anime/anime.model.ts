@@ -2,7 +2,6 @@ import { Table, Column, Model, DataType, HasMany, BelongsToMany, BelongsTo, HasO
 
 import { AnimeGenre } from 'src/genre/genre-anime.model';
 import { AnimeTag } from 'src/tag/tag-anime.model';
-import { AnimeComment } from 'src/comment/comment-anime.model';
 import { AnimeRelation } from './anime-relation.model';
 
 import { User } from 'src/users/users.model';
@@ -18,7 +17,6 @@ interface AnimeCreationAttrs{
   description: string;
   imagePath: string;
   userId: number;
-  author: User;
 }
 
 @Table({tableName:'animes'})
@@ -29,7 +27,7 @@ export class AnimeTitle extends Model<AnimeTitle, AnimeCreationAttrs> {
   @Column({type: DataType.STRING, unique: true, allowNull: false})
   englishTitle: string;
 
-  @Column({type: DataType.STRING, unique: true, allowNull: false})
+  @Column({type: DataType.STRING, unique: true})
   originalTitle: string;
 
   @Column({type: DataType.INTEGER, allowNull: false})
@@ -47,7 +45,7 @@ export class AnimeTitle extends Model<AnimeTitle, AnimeCreationAttrs> {
   @Column({type: DataType.INTEGER, defaultValue: 1})
   episodesTotal: number;
 
-  @Column({type: DataType.DECIMAL(2, 2), defaultValue: 0.0})
+  @Column({type: DataType.DECIMAL(2, 2), defaultValue: 0})
   rating: number;
 
   @Column({type: DataType.STRING, allowNull: false})
@@ -56,7 +54,7 @@ export class AnimeTitle extends Model<AnimeTitle, AnimeCreationAttrs> {
   @Column({type: DataType.STRING, allowNull: false})
   imagePath: string;
 
-  @BelongsToMany(() => Comment, () => AnimeComment)
+  @HasMany(() => Comment)
   comment: Comment[];
 
   @BelongsToMany(() => AnimeTitle, () => AnimeRelation, 'animeId', 'relatedAnimeId')

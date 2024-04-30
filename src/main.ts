@@ -3,11 +3,14 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { AtGuard } from './common/guards';
+import { Sequelize } from 'sequelize-typescript';
 
 async function bootstrap() {
   // Consts for app
   const PORT = process.env.PORT || '3003'
   const app = await NestFactory.create(AppModule);
+  const sequelize = app.get(Sequelize); //delete for prod
+  await sequelize.sync({ force: true }); //delete for prod
 
   // Swagger config
   const config = new DocumentBuilder()
@@ -20,8 +23,6 @@ async function bootstrap() {
 
   // Start server
   app.useGlobalPipes(new ValidationPipe())
-  // const reflector = new Reflector();
-  // app.useGlobalGuards(new AtGuard(reflector))
   await app.listen(PORT, () => console.log(`Started on port = ${process.env.PORT}`));
 }
 
