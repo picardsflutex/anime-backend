@@ -24,15 +24,13 @@ export class AuthService {
       throw new HttpException('Current user is already exist.',
       HttpStatus.BAD_REQUEST)
 
-    const hashPassword = await bcrypt.hash(candidateDto.password_hash, 5)
+    const hashPassword = await bcrypt.hash(candidateDto.password, 5)
     const activateKey : string = uuid.v4()
 
     const user = await this.userService.createUser(
       {...candidateDto, password_hash: hashPassword, activateKey}
     )
     await this.mailService.sendActivationEmail(candidateDto.email, activateKey)
-
-    return await this.getTokens(user)
   }
 
   async signin(userDto: AuthUserDto) {
@@ -94,13 +92,15 @@ export class AuthService {
   
   async validateUser(userDto: AuthUserDto) {
     const user = await this.userService.getUserByEmail(userDto.email)
-    const passwordEquals = await bcrypt.compare(
-      userDto.password_hash,
-      user.password_hash
-    )
+    if(!user)
+      throw new UnauthorizedException({message: 'Invalid input password or email.'})
     if(!user.isActivated)
       throw new HttpException('Confirm your email.',
       HttpStatus.BAD_REQUEST)
+    const passwordEquals = await bcrypt.compare(
+      userDto.password,
+      user.password_hash
+    )
     if(user && passwordEquals) {
       return user
     }

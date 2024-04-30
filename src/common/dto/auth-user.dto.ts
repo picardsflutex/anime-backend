@@ -9,6 +9,6 @@ export class AuthUserDto {
   
   @ApiProperty({example: 'examplepass123', description: 'Password', required: true})
   @IsString({message: 'Password shoold be a string.'})
-  @Length(4, 20, {message: 'Password shoold be a string.'})
-  readonly password_hash: string;
+  @Length(8, 20, {message: 'Password shoold be a string.'})
+  readonly password: string;
 }

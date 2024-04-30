@@ -22,11 +22,11 @@ export class AuthController {
   }
 
   @ApiOperation({summary: 'Registration new user.'})
-  @ApiResponse({status: 200, description:'Refresh and access tokens.'})
+  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'User registered successfully without any content.' })
   @Public()
   @Post('/signup')
-  @HttpCode(HttpStatus.OK)
-  register(@Body() userDto: AuthUserDto) : Promise<Tokens>  {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  register(@Body() userDto: AuthUserDto) {
     return this.authService.signup(userDto)
   }
 
