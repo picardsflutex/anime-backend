@@ -70,7 +70,7 @@ export class AuthService {
         role: user.role
       },{
         secret: process.env.PRIVATE_AT_SECRET,
-        expiresIn: 60 * 30,
+        expiresIn: process.env.LIFETIME_AT
       }
       ),
       this.jwtService.signAsync({
@@ -79,7 +79,7 @@ export class AuthService {
         role: user.role
       },{
         secret: process.env.PRIVATE_RT_SECRET,
-        expiresIn: 60 * 60 * 24 * 30,
+        expiresIn: process.env.LIFETIME_RT,
       }
       )]
     )

@@ -37,7 +37,7 @@ export class AnimeTitle extends Model<AnimeTitle, AnimeCreationAttrs> {
   genres: Genre[]
 
   @BelongsToMany(() => Tag, () => AnimeTag)
-  tag: Tag[]
+  tags: Tag[]
 
   @Column({type: DataType.INTEGER, defaultValue: 0})
   episodesCurrent: number;
@@ -55,7 +55,7 @@ export class AnimeTitle extends Model<AnimeTitle, AnimeCreationAttrs> {
   imagePath: string;
 
   @HasMany(() => Comment)
-  comment: Comment[];
+  comments: Comment[];
 
   @BelongsToMany(() => AnimeTitle, () => AnimeRelation, 'animeId', 'relatedAnimeId')
   relatedAnimes: AnimeTitle[];
