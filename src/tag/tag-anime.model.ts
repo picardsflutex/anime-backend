@@ -9,9 +9,9 @@ export class AnimeTag extends Model<AnimeTag> {
 
   @ForeignKey(() => AnimeTitle)
   @Column({type: DataType.INTEGER})
-  animeId: number;
+  anime_id: number;
 
   @ForeignKey(() => Tag)
   @Column({type: DataType.INTEGER})
-  TagId: number;
+  tag_id: number;
 }

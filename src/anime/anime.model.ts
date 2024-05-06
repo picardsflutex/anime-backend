@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, HasMany, BelongsToMany, BelongsTo, HasOne, ForeignKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, HasMany, BelongsToMany, BelongsTo, ForeignKey } from 'sequelize-typescript';
 
 import { AnimeGenre } from 'src/genre/genre-anime.model';
 import { AnimeTag } from 'src/tag/tag-anime.model';
@@ -12,11 +12,11 @@ import { Tag } from 'src/tag/tag.model';
 interface AnimeCreationAttrs{
   englishTitle: string;
   releaseYear: number;
-  genres: Genre[];
-  tag: Tag[];
+  genres?: Genre[];
+  tags?: Tag[];
   description: string;
-  imagePath: string;
-  userId: number;
+  imagePath?: string;
+  user_id: number;
 }
 
 @Table({tableName:'animes'})
@@ -51,7 +51,7 @@ export class AnimeTitle extends Model<AnimeTitle, AnimeCreationAttrs> {
   @Column({type: DataType.STRING, allowNull: false})
   description: string;
 
-  @Column({type: DataType.STRING, allowNull: false})
+  @Column({type: DataType.STRING})
   imagePath: string;
 
   @HasMany(() => Comment)
@@ -62,7 +62,7 @@ export class AnimeTitle extends Model<AnimeTitle, AnimeCreationAttrs> {
 
   @ForeignKey(() => User)
   @Column({type: DataType.INTEGER, allowNull: false})
-  userId: number;
+  user_id: number;
 
   @BelongsTo(() => User)
   author: User;

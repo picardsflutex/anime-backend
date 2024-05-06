@@ -8,24 +8,15 @@ export class GenreService {
 
   constructor(@InjectModel(Genre) private genreRepository: typeof Genre){}
 
-  async getGenreOrCreate(dto : CreateGenreTagDto | CreateGenreTagDto[]) {
-    if(Array.isArray(dto)) {
-      const uniqueNames = new Set(dto.map(item => item.name));
-      const genres = await Promise.all(Array.from(uniqueNames).map(async (name) => {
-          const item = dto.find(item => item.name === name);
-          const [genre, created] = await this.genreRepository.findOrCreate({
-              where: { name: name },
-              defaults: item
-          });
-          return genre;
-      }));
-      return genres.filter(genre => genre !== null);
-    } else {
-      const [genre, created] = await this.genreRepository.findOrCreate({
-        where: { name: dto.name },
-        defaults: dto
+  async getGenreOrCreate(dto : string | string[]): Promise<Genre[]> {
+    const names = Array.isArray(dto) ? Array.from(new Set(dto)) : [dto];
+    const genres = await Promise.all(names.map(async name => {
+      const [genre] = await this.genreRepository.findOrCreate({
+        where: { name },
+        defaults: { name }
       });
       return genre;
-    }
+    }));
+    return genres.filter(genre => genre !== null);
   }
 }

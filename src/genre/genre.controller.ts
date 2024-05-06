@@ -19,7 +19,7 @@ export class GenreController {
   'voice_team_leader', 'voice_team_moderator')
   @UseGuards(RoleGuard)
   @Post('/')
-  createGenre(@Body() dto : CreateGenreTagDto | CreateGenreTagDto[]) {
+  createGenre(@Body() dto : string | string[]) {
     return this.genreService.getGenreOrCreate(dto);
   }
 }

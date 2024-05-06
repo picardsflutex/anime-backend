@@ -9,7 +9,7 @@ interface GenreCreationAttrs{
 @Table({tableName:'genres'})
 export class Genre extends Model<Genre, GenreCreationAttrs> {
   @Column({type: DataType.INTEGER, unique: true, primaryKey: true, autoIncrement: true })
-  id: number;
+  genre_id: number;
 
   @Column({type: DataType.STRING, unique: true})
   name: string;

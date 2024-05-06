@@ -18,6 +18,9 @@ import { AuthModule } from 'src/auth/auth.module';
       AnimeTag
     ]),
     forwardRef(() => AuthModule)
+  ],
+  exports:[
+    TagService
   ]
 })
 export class TagModule {}

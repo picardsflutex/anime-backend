@@ -19,6 +19,9 @@ import { AnimeGenre } from './genre-anime.model';
       AnimeGenre
     ]),
     forwardRef(() => AuthModule)
+  ],
+  exports:[
+    GenreService
   ]
 })
 export class GenreModule {}

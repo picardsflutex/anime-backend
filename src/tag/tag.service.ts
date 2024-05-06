@@ -8,26 +8,16 @@ export class TagService {
 
   constructor(@InjectModel(Tag) private tagRepository: typeof Tag){}
 
-  async getTagOrCreate(dto : CreateGenreTagDto | CreateGenreTagDto[]) {
-
-    if(Array.isArray(dto)) {
-      const uniqueNames = new Set(dto.map(item => item.name));
-      const tags = await Promise.all(Array.from(uniqueNames).map(async (name) => {
-          const item = dto.find(item => item.name === name);
-          const [tag, created] = await this.tagRepository.findOrCreate({
-              where: { name: name },
-              defaults: item
-          });
-          return tag;
-      }));
-      return tags.filter(tag => tag !== null);
-    } else {
-      const [tag, created] = await this.tagRepository.findOrCreate({
-        where: { name: dto.name },
-        defaults: dto
+  async getTagOrCreate(dto: string | string[]): Promise<Tag[]> {
+    const names = Array.isArray(dto) ? Array.from(new Set(dto)) : [dto];
+    const tags = await Promise.all(names.map(async name => {
+      const [tag] = await this.tagRepository.findOrCreate({
+        where: { name },
+        defaults: { name }
       });
       return tag;
-    }
-  }
+    }));
+    return tags.filter(tag => tag !== null);
+}
 
 }

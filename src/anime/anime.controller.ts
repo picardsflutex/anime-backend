@@ -1,10 +1,19 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AnimeService } from './anime.service';
-import { CreateAnimeDto } from 'src/common/dto/animeDTOs/create-anime.dto';
+import { CreateAnimeDto } from 'src/common/dto';
 import { RoleGuard } from 'src/common/guards';
 import { Public, Roles } from 'src/common/decorators';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AnimeTitle } from './anime.model';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { JwtPayload } from 'src/common/types';
+import { Request } from 'express';
+
+declare module 'express' {
+  interface Request {
+    user?: JwtPayload; 
+  }
+}
 
 @ApiTags('Anime')
 @Controller('anime')
@@ -20,13 +29,17 @@ export class AnimeController {
     return this.animeService.getAnime(id);
   }
 
+  @Roles('admin', 'media_moderator', 'voice_team_leader', 'voice_team_moderator')
+  @UseGuards(RoleGuard)
   @ApiOperation({summary: 'Create new anime page.'})
   @ApiResponse({status: 200, type: AnimeTitle})
   @Post('/create')
-  @Roles('admin', 'media_moderator',
-  'voice_team_leader', 'voice_team_moderator')
-  @UseGuards(RoleGuard)
-  createAnime(@Body() dto: CreateAnimeDto) {
-    return this.animeService.createAnime(dto);
+  @UseInterceptors(FileInterceptor('image'))
+  createAnime(
+    @Req() req: Request,
+    @Body() dto: CreateAnimeDto,
+    @UploadedFile() image
+  ) {
+    return this.animeService.createAnime(dto, image, req.user.user_id);
   }
 }

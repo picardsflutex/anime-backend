@@ -18,7 +18,7 @@ export class TagController {
   'voice_team_leader', 'voice_team_moderator')
   @UseGuards(RoleGuard)
   @Post('/')
-  createTag(@Body() dto: CreateGenreTagDto | CreateGenreTagDto[]) {
+  createTag(@Body() dto: string | string[]) {
     return this.tagService.getTagOrCreate(dto);
   }
 }

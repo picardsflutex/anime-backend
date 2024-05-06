@@ -7,12 +7,12 @@ import { AtGuard } from './common/guards';
 
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { ImagesModule } from './images/images.module';
 import { AnimeModule } from './anime/anime.module';
 import { MailerModule } from './mailer/mailer.module';
 import { GenreModule } from './genre/genre.module';
 import { TagModule } from './tag/tag.module';
 import { CommentModule } from './comment/comment.module';
+import { FilesModule } from './files/files.module';
 
 import { User } from './users/users.model';
 import { AnimeTitle } from './anime/anime.model';
@@ -59,12 +59,12 @@ import { AnimeRelation } from './anime/anime-relation.model';
     }),
     UsersModule,
     AuthModule,
-    ImagesModule,
     AnimeModule,
     MailerModule,
     GenreModule,
     TagModule,
-    CommentModule
+    CommentModule,
+    FilesModule
   ],
 })
 export class AppModule {}
