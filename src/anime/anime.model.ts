@@ -18,6 +18,7 @@ interface AnimeCreationAttrs{
   tags?: Tag[];
   description: string;
   imagePath?: string;
+  episodesTotal: number;
   user_id: number;
 }
 

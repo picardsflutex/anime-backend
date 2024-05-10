@@ -10,7 +10,7 @@ import { FilesService } from 'src/files/files.service';
 import { TagService } from 'src/tag/tag.service';
 import { GenreService } from 'src/genre/genre.service';
 
-import { CreateGenreTagDto, CreateAnimeDto } from 'src/common/dto';
+import { CreateAnimeDto } from 'src/common/dto';
 
 @Injectable()
 export class AnimeService {
@@ -25,12 +25,19 @@ export class AnimeService {
   async createAnime(dto: CreateAnimeDto, image: any, user_id:number) {
     try {
       const fileName = await this.fileService.createFile(image);
-      const { tags, genres, ...newDto} = dto
+      const { 
+        tags, 
+        genres, 
+        episodesTotal, 
+        releaseYear, 
+        ...newDto} = dto
       const getTags = await this.tagService.getTagOrCreate(tags)
       const getGenres = await this.genreService.getGenreOrCreate(genres)
       const anime = await this.animeRepository.create({
         ...newDto,
         imagePath: fileName,
+        episodesTotal: parseInt(episodesTotal),
+        releaseYear: parseInt(releaseYear),
         user_id
       });
       anime.$set('tags', getTags)
