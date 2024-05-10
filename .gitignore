@@ -397,6 +397,7 @@ Temporary Items
 .production.env
 .development.env
 .env
+static
 dist
 .webpack
 .serverless/**/*.zip

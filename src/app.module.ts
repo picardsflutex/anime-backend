@@ -22,6 +22,8 @@ import { Tag } from './tag/tag.model';
 import { Genre } from './genre/genre.model';
 import { Comment } from './comment/comment.model';
 import { AnimeRelation } from './anime/anime-relation.model';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
 
 
 @Module({
@@ -33,6 +35,9 @@ import { AnimeRelation } from './anime/anime-relation.model';
     },
   ],
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '..' , 'static')
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.${process.env.NODE_ENV}.env`,

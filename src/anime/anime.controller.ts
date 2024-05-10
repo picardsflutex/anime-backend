@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AnimeService } from './anime.service';
 import { CreateAnimeDto } from 'src/common/dto';
-import { AtGuard, RoleGuard } from 'src/common/guards';
+import { RoleGuard } from 'src/common/guards';
 import { Public, Roles } from 'src/common/decorators';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AnimeTitle } from './anime.model';
@@ -29,8 +29,8 @@ export class AnimeController {
     return this.animeService.getAnime(id);
   }
 
-  // @Roles('admin', 'media_moderator', 'voice_team_leader', 'voice_team_moderator')
-  @UseGuards(AtGuard)
+  @Roles('admin', 'media_moderator', 'voice_team_leader', 'voice_team_moderator')
+  @UseGuards(RoleGuard)
   @ApiOperation({summary: 'Create new anime page.'})
   @ApiResponse({status: 200, type: AnimeTitle})
   @Post('/create')
