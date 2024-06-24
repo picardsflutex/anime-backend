@@ -11,6 +11,7 @@ import { TagService } from 'src/tag/tag.service';
 import { GenreService } from 'src/genre/genre.service';
 
 import { CreateAnimeDto } from 'src/common/dto';
+import { User } from 'src/users/users.model';
 
 @Injectable()
 export class AnimeService {
@@ -65,7 +66,14 @@ export class AnimeService {
         },
         {
           model: Comment,
-          as: 'comments'
+          as: 'comments',
+          include: [
+            {
+              model: User,
+              as: 'author',
+              attributes: ['user_id', 'username', 'email', 'avatarImg']
+            }
+          ]
         }
       ]
     });
